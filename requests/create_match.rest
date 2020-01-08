@@ -1,0 +1,17 @@
+POST http://localhost:3001/api/matches
+Content-Type: application/json
+
+{
+  "players": [
+    {
+      "id": 4,
+      "player": "Iida",
+      "points": 6
+    },
+    {
+      "id": 3,
+      "player": "Jyri",
+      "points": 10
+    }
+  ]
+}
