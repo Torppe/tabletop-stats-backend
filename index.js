@@ -7,6 +7,7 @@ const matchesRouter = require('./controllers/matchesRouter')
 
 app.use(bodyParser.json())
 app.use(cors())
+app.use(express.static('build'))
 app.use('/api/games', gamesRouter)
 app.use('/api/matches', matchesRouter)
 
