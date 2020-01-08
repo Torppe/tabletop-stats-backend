@@ -2,16 +2,11 @@ POST http://localhost:3001/api/matches
 Content-Type: application/json
 
 {
+  "game" : "5e16128e927f3d468440bc6a",
   "players": [
     {
-      "id": 4,
-      "player": "Iida",
+      "player": "5e161d8c02b64e4ef74042e3",
       "points": 6
-    },
-    {
-      "id": 3,
-      "player": "Jyri",
-      "points": 10
     }
   ]
 }

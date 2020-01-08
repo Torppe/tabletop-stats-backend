@@ -1,35 +1,33 @@
 const gamesRouter = require('express').Router()
-let games = [
-  {
-    id: 1,
-    title: 'Terraforming mars'
-  },
-  {
-    id: 2,
-    title: 'Power grid'
-  }
-]
+const Game = require('../models/game')
 
 gamesRouter.get('/', (req, res) => {
-  res.json(games)
+  Game.find({}).then(games => {
+    res.json(games.map(g => g.toJSON()))
+  })
 })
 
 gamesRouter.get('/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const game = games.find(g => g.id === id)
-
-  if(game) {
-    res.json(game)
-  } else {
-    res.status(404).end()
-  }
+  Game.findById(req.params.id)
+    .then(g => {
+      if(g) {
+        res.json(g.toJSON())
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(400).send({ error: 'malformatted id' })
+    })
 })
 
-gamesRouter.delete('/:id', (req, res) => {
-  const id = Number(req.params.id)
-  games = games.filter(j => j.id !== id)
-
-  res.status(204).end()
+gamesRouter.delete('/:id', (req, res, next) => {
+  Game.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 gamesRouter.post('/', (req, res) => {
@@ -41,13 +39,15 @@ gamesRouter.post('/', (req, res) => {
     })
   }
 
-  const game = {
-    id: 1000,
-    title: body.title
-  }
+  const game = new Game({
+    title: body.title,
+    date: new Date(),
+    matches: []
+  })
 
-  games = games.concat(game)
-  res.json(game)
+  game.save().then(savedGame => {
+    res.json(savedGame.toJSON())
+  })
 })
 
 module.exports = gamesRouter

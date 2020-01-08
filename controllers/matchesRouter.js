@@ -1,63 +1,40 @@
 const matchesRouter = require('express').Router()
-let matches = [
-  {
-    id: 1,
-    gameId: 2,
-    players: [
-      {
-        id: 1,
-        player: 'Tuomas',
-        points: 5
-      },
-      {
-        _id: 2,
-        player: 'Maiju',
-        points: 4
-      }
-    ]
-  },
-  {
-    id: 2,
-    gameId: 1,
-    players: [
-      {
-        id: 1,
-        player: 'Tuomas',
-        points: 1
-      },
-      {
-        id: 2,
-        player: 'Maiju',
-        points: 3
-      }
-    ]
-  }
-]
+const Match = require('../models/match')
 
 matchesRouter.get('/', (req, res) => {
-  res.json(matches)
+  Match.find({}).then(matches => {
+    res.json(matches.map(m => m.toJSON()))
+  })
 })
 
 matchesRouter.get('/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const match = matches.find(m => m.id === id)
-
-  if(match) {
-    res.json(match)
-  } else {
-    res.status(404).end()
-  }
+  Match.findById(req.params.id)
+  .then(m => {
+    if(m) {
+      res.json(m.toJSON())
+    } else {
+      res.status(404).end()
+    }
+  })
+  .catch(error => {
+    console.log(error)
+    res.status(400).send({ error: 'malformatted id' })
+  })
 })
 
 matchesRouter.get('/game/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const matchesByGame = matches.filter(m => m.gameId === id)
-
-  if(matchesByGame && matchesByGame.length > 0) {
-    res.json(matchesByGame)
-  } else {
-    res.status(404).end()
-  }
+  Match.find({ game: req.params.id })
+    .then(matches => {
+      if(matches) {
+        res.json(matches.map(m => m.toJSON()))
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(400).send({ error: 'malformatted id' })
+    })
 })
 
 matchesRouter.delete('/:id', (req, res) => {
@@ -76,13 +53,21 @@ matchesRouter.post('/', (req, res) => {
     })
   }
 
-  const match = {
-    id: 1000,
-    players: body.players
+  if(!body.game) {
+    return res.status(400).json({
+      error: 'game missing'
+    })
   }
 
-  matches = matches.concat(match)
-  res.json(match)
+  const match = new Match({
+    date: new Date(),
+    game: body.game,
+    players: body.players
+  })
+
+  match.save().then(savedMatch => {
+    res.json(savedMatch.toJSON())
+  })
 })
 
 module.exports = matchesRouter
