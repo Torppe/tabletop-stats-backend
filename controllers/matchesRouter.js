@@ -1,40 +1,37 @@
 const matchesRouter = require('express').Router()
 const Match = require('../models/match')
 
-matchesRouter.get('/', (req, res) => {
-  Match.find({}).then(matches => {
-    res.json(matches.map(m => m.toJSON()))
-  })
+matchesRouter.get('/', async (req, res) => {
+  const matches = await Match.find({})
+  res.json(matches.map(m => m.toJSON()))
 })
 
-matchesRouter.get('/:id', (req, res) => {
-  Match.findById(req.params.id)
-  .then(m => {
-    if(m) {
-      res.json(m.toJSON())
+matchesRouter.get('/:id', async (req, res) => {
+  const match = await Match.findById(req.params.id)
+  try {
+    if(match) {
+      res.json(match.toJSON())
     } else {
       res.status(404).end()
     }
-  })
-  .catch(error => {
+  } catch(error) {
     console.log(error)
     res.status(400).send({ error: 'malformatted id' })
-  })
+  }
 })
 
-matchesRouter.get('/game/:id', (req, res) => {
-  Match.find({ game: req.params.id })
-    .then(matches => {
-      if(matches) {
-        res.json(matches.map(m => m.toJSON()))
-      } else {
-        res.status(404).end()
-      }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(400).send({ error: 'malformatted id' })
-    })
+matchesRouter.get('/game/:id', async (req, res) => {
+  const matches = await Match.find({ game: req.params.id })
+  try {
+    if(matches) {
+      res.json(matches.map(m => m.toJSON()))
+    } else {
+      res.status(404).end()
+    }
+  } catch(error) {
+    console.log(error)
+    res.status(400).send({ error: 'malformatted id' })
+  }
 })
 
 matchesRouter.delete('/:id', (req, res) => {

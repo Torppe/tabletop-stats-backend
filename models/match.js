@@ -1,16 +1,40 @@
 const mongoose = require('mongoose')
 
+const pointsSchema = mongoose.Schema({
+  player: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Player',
+    required: true
+  },
+  points: {
+    type: Number,
+    required: true
+  }
+}, { _id: false })
+
 const matchSchema = mongoose.Schema({
   date: Date,
   game: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Game'
+    ref: 'Game',
+    required: true
   },
-  players: [{
-    player: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},
-    points: Number
-  }]
+  players: {
+    type:[pointsSchema],
+    required: true
+  }
 })
+    // players: {
+    //   type:[{
+    //     player: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},
+    //     points: Number
+    //   }],
+    //   required: true
+    // }
+    // players: [{
+    //   player: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},
+    //   points: Number
+    // }]
 
 matchSchema.set('toJSON', {
   transform: (document, returnedObject) => {

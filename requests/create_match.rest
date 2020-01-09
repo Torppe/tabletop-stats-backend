@@ -5,8 +5,8 @@ Content-Type: application/json
   "game" : "5e16128e927f3d468440bc6a",
   "players": [
     {
-      "player": "5e161d8c02b64e4ef74042e3",
-      "points": 6
+      "player": "5e1761f7d73a6f6253e29a51",
+      "points": 10
     }
   ]
 }
