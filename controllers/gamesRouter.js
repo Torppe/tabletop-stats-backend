@@ -41,8 +41,7 @@ gamesRouter.post('/', (req, res) => {
 
   const game = new Game({
     title: body.title,
-    date: new Date(),
-    matches: []
+    date: new Date()
   })
 
   game.save().then(savedGame => {

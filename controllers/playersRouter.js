@@ -41,8 +41,7 @@ playersRouter.post('/', (req, res) => {
 
   const player = new Player({
     name: body.name,
-    date: new Date(),
-    matches: []
+    date: new Date()
   })
 
   player.save().then(savedPlayer => {

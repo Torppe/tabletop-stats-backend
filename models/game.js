@@ -7,12 +7,20 @@ const gameSchema = mongoose.Schema({
     required: true,
     unique: true
   },
-  date: Date,
-  matches: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Match"
-  }]
+  date: Date
 })
+// const gameSchema = mongoose.Schema({
+//   title: {
+//     type: String,
+//     required: true,
+//     unique: true
+//   },
+//   date: Date,
+//   matches: [{
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "Match"
+//   }]
+// })
 
 gameSchema.plugin(uniqueValidator)
 

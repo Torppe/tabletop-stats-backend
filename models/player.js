@@ -11,12 +11,24 @@ const playerSchema = mongoose.Schema({
   date: {
     type: Date,
     required: true
-  },
-  matches: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Match'
-  }]
+  }
 })
+// const playerSchema = mongoose.Schema({
+//   name: {
+//     type: String,
+//     minLength: 1,
+//     unique: true,
+//     required: true
+//   },
+//   date: {
+//     type: Date,
+//     required: true
+//   },
+//   matches: [{
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: 'Match'
+//   }]
+// })
 
 playerSchema.plugin(uniqueValidator)
 

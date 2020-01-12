@@ -2,5 +2,5 @@ POST http://localhost:3001/api/games
 Content-Type: application/json
 
 {
-  "title": "new game"
+  "title": "new game 2"
 }

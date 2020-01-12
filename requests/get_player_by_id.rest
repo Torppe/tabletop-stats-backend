@@ -1,0 +1,1 @@
+GET http://localhost:3001/api/players/5e199e4159f6dc15db82056e
