@@ -48,7 +48,7 @@ matchesRouter.delete('/:id', (req, res) => {
   res.status(204).end()
 })
 
-matchesRouter.post('/', (req, res) => {
+matchesRouter.post('/', async (req, res) => {
   const body = req.body
 
   if(!body.players || body.players.length < 1) {
@@ -69,9 +69,20 @@ matchesRouter.post('/', (req, res) => {
     players: body.players
   })
 
-  match.save().then(savedMatch => {
-    res.json(savedMatch.toJSON())
-  })
+  const savedMatch = await match.save()
+  await savedMatch
+    .populate('players.player')
+    .execPopulate()
+
+  try {
+    if(savedMatch) {
+      res.status(201).json(savedMatch.toJSON())
+    } else {
+      res.status(404).end()
+    }
+  } catch(error) {
+    console.log(error)
+  }
 })
 
 module.exports = matchesRouter
