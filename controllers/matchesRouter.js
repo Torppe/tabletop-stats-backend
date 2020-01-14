@@ -2,12 +2,16 @@ const matchesRouter = require('express').Router()
 const Match = require('../models/match')
 
 matchesRouter.get('/', async (req, res) => {
-  const matches = await Match.find({})
+  const matches = await Match
+    .find({})
+    .populate('players.player')
   res.json(matches.map(m => m.toJSON()))
 })
 
 matchesRouter.get('/:id', async (req, res) => {
-  const match = await Match.findById(req.params.id)
+  const match = await Match
+    .findById(req.params.id)
+    .populate('players.player')
   try {
     if(match) {
       res.json(match.toJSON())
@@ -21,7 +25,10 @@ matchesRouter.get('/:id', async (req, res) => {
 })
 
 matchesRouter.get('/game/:id', async (req, res) => {
-  const matches = await Match.find({ game: req.params.id })
+  const matches = await Match
+    .find({ game: req.params.id })
+    .populate('players.player')
+    
   try {
     if(matches) {
       res.json(matches.map(m => m.toJSON()))
