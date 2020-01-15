@@ -28,7 +28,7 @@ matchesRouter.get('/game/:id', async (req, res) => {
   const matches = await Match
     .find({ game: req.params.id })
     .populate('players.player')
-    
+
   try {
     if(matches) {
       res.json(matches.map(m => m.toJSON()))
@@ -41,11 +41,16 @@ matchesRouter.get('/game/:id', async (req, res) => {
   }
 })
 
-matchesRouter.delete('/:id', (req, res) => {
-  const id = Number(req.params.id)
-  matches = matches.filter(m => m.id !== id)
-
-  res.status(204).end()
+matchesRouter.delete('/:id', async (req, res) => {
+  const result = await Match.findByIdAndRemove(req.params.id)
+  try {
+    if(result) {
+      res.status(204).end()
+    }
+  } catch(error) {
+    console.log(error)
+    res.status(400).send({ error: 'malformatted id' })
+  }
 })
 
 matchesRouter.post('/', async (req, res) => {

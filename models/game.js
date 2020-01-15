@@ -9,22 +9,10 @@ const gameSchema = mongoose.Schema({
   },
   date: Date
 })
-// const gameSchema = mongoose.Schema({
-//   title: {
-//     type: String,
-//     required: true,
-//     unique: true
-//   },
-//   date: Date,
-//   matches: [{
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "Match"
-//   }]
-// })
 
 gameSchema.plugin(uniqueValidator)
 
-gameSchema.set("toJSON", {
+gameSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id

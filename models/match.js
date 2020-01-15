@@ -24,17 +24,6 @@ const matchSchema = mongoose.Schema({
     required: true
   }
 })
-    // players: {
-    //   type:[{
-    //     player: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},
-    //     points: Number
-    //   }],
-    //   required: true
-    // }
-    // players: [{
-    //   player: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},
-    //   points: Number
-    // }]
 
 matchSchema.set('toJSON', {
   transform: (document, returnedObject) => {
