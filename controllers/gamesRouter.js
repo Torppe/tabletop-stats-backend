@@ -1,4 +1,5 @@
 const gamesRouter = require('express').Router()
+const token = require('../utils/token')
 const Game = require('../models/game')
 
 gamesRouter.get('/', (req, res) => {
@@ -30,23 +31,34 @@ gamesRouter.delete('/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-gamesRouter.post('/', (req, res) => {
+gamesRouter.post('/', async (req, res) => {
   const body = req.body
+  try {
+    const decodedTokenId = token.verifyToken(req)
 
-  if(!body.title) {
-    return res.status(400).json({
-      error: 'title missing'
+    if(!decodedTokenId) {
+      return res.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    if(!body.title) {
+      return res.status(400).json({
+        error: 'title missing'
+      })
+    }
+
+    const game = new Game({
+      title: body.title,
+      date: new Date()
     })
-  }
 
-  const game = new Game({
-    title: body.title,
-    date: new Date()
-  })
-
-  game.save().then(savedGame => {
+    const savedGame = await game.save()
     res.json(savedGame.toJSON())
-  })
+    // game.save().then(savedGame => {
+    //   res.json(savedGame.toJSON())
+    // })
+  } catch(error) {
+    console.log(error)
+  }
 })
 
 module.exports = gamesRouter

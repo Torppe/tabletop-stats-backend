@@ -4,10 +4,12 @@ const helmet = require('helmet')
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const mongoose = require('mongoose')
 const gamesRouter = require('./controllers/gamesRouter')
 const matchesRouter = require('./controllers/matchesRouter')
 const playersRouter = require('./controllers/playersRouter')
-const mongoose = require('mongoose')
+const usersRouter = require('./controllers/usersRouter')
+const loginRouter = require('./controllers/loginRouter')
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
   .then(result => {
@@ -24,6 +26,8 @@ app.use(express.static('build'))
 app.use('/api/games', gamesRouter)
 app.use('/api/matches', matchesRouter)
 app.use('/api/players', playersRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 
 app.get('/', (req, res) => {
   res.send('<h1>backend is running</h1>')
