@@ -1,11 +1,14 @@
 const gamesRouter = require('express').Router()
-const token = require('../utils/token')
 const Game = require('../models/game')
+const jwt = require('jsonwebtoken')
 
-gamesRouter.get('/', (req, res) => {
-  Game.find({}).then(games => {
+gamesRouter.get('/', async (req, res, next) => {
+  try {
+    const games = await Game.find({})
     res.json(games.map(g => g.toJSON()))
-  })
+  } catch (error) {
+    next(error)
+  }
 })
 
 gamesRouter.get('/:id', (req, res) => {
@@ -23,20 +26,27 @@ gamesRouter.get('/:id', (req, res) => {
     })
 })
 
-gamesRouter.delete('/:id', (req, res, next) => {
-  Game.findByIdAndRemove(req.params.id)
-    .then(result => {
-      res.status(204).end()
-    })
-    .catch(error => next(error))
+gamesRouter.delete('/:id', async (req, res, next) => {
+  try {
+    const decodedToken = jwt.verify(req.token, process.env.SECRET)
+
+    if(!req.token || !decodedToken.id) {
+      return res.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    await Game.findByIdAndRemove(req.params.id)
+    res.status(204).end()
+  } catch(error) {
+    next(error)
+  }
 })
 
-gamesRouter.post('/', async (req, res) => {
+gamesRouter.post('/', async (req, res, next) => {
   const body = req.body
   try {
-    const decodedTokenId = token.verifyToken(req)
+    const decodedToken = jwt.verify(req.token, process.env.SECRET)
 
-    if(!decodedTokenId) {
+    if(!req.token || !decodedToken.id) {
       return res.status(401).json({ error: 'token missing or invalid' })
     }
 
@@ -57,7 +67,7 @@ gamesRouter.post('/', async (req, res) => {
     //   res.json(savedGame.toJSON())
     // })
   } catch(error) {
-    console.log(error)
+    next(error)
   }
 })
 

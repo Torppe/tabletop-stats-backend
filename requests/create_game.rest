@@ -1,6 +1,7 @@
 POST http://localhost:3001/api/games
 Content-Type: application/json
+Authorization: bearer <tahan token>
 
 {
-  "title": "new game 2"
+  "title": "tokenin testailua"
 }
