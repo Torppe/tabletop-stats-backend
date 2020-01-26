@@ -1,6 +1,7 @@
 const matchesRouter = require('express').Router()
 const Match = require('../models/match')
 const jwt = require('jsonwebtoken')
+const mongoose = require('mongoose')
 
 matchesRouter.get('/', async (req, res, next) => {
   try {
@@ -35,6 +36,22 @@ matchesRouter.get('/game/:id', async (req, res) => {
     .populate('players.player')
 
   try {
+    if(matches) {
+      res.json(matches.map(m => m.toJSON()))
+    } else {
+      res.status(404).end()
+    }
+  } catch(error) {
+    console.log(error)
+    res.status(400).send({ error: 'malformatted id' })
+  }
+})
+
+matchesRouter.get('/player/:id', async (req, res) => {
+  try {
+    const matches = await Match
+      .find({ 'players.player': req.params.id })
+      .populate('players.player')
     if(matches) {
       res.json(matches.map(m => m.toJSON()))
     } else {
