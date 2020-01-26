@@ -1,7 +1,6 @@
 const matchesRouter = require('express').Router()
 const Match = require('../models/match')
 const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose')
 
 matchesRouter.get('/', async (req, res, next) => {
   try {
@@ -52,6 +51,8 @@ matchesRouter.get('/player/:id', async (req, res) => {
     const matches = await Match
       .find({ 'players.player': req.params.id })
       .populate('players.player')
+      .populate('game', { id: 1, title: 1 })
+      .exec()
     if(matches) {
       res.json(matches.map(m => m.toJSON()))
     } else {
