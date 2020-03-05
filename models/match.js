@@ -19,6 +19,10 @@ const matchSchema = mongoose.Schema({
     ref: 'Game',
     required: true
   },
+  winner: {
+    type: pointsSchema,
+    required: true
+  },
   players: {
     type:[pointsSchema],
     required: true
