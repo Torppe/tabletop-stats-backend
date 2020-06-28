@@ -1,6 +1,7 @@
 POST http://localhost:3001/api/players
 Content-Type: application/json
+Authorization: bearer <tahan token>
 
 {
-  "name": "TestaajaHuuhaa"
+  "name": "Testaaja1"
 }
